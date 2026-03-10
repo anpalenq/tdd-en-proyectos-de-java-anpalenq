@@ -1,6 +1,5 @@
-name: CI - Test y actualizar early
+name: CI - Tests y actualizar early
 
-# Ejecutar en cada push a main
 on:
   push:
     branches:
@@ -11,26 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Checkout repository
       uses: actions/checkout@v3
 
-
-    - name: Setup JDK
+    - name: Configurar Java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
 
-
-    - name: Compilar código
-      run: javac -d out src/main/java/com/tt1/test/*.java src/test/java/com/tt1/test/*.java
-
-
-    - name: Ejecutar tests
-      run: |
-        java -cp out org.junit.runner.JUnitCore $(find src/test/java/com/tt1/test -name "*Test.java" -exec basename {} .java \;)
-
+    - name: Ejecutar tests con Maven
+      run: mvn clean test
 
     - name: Actualizar rama early
       if: success()   # Solo si los tests pasan
