@@ -1,0 +1,43 @@
+name: CI - Test y actualizar early
+
+# Ejecutar en cada push a main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-update:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+
+    - name: Compilar código
+      run: javac -d out src/main/java/com/tt1/test/*.java src/test/java/com/tt1/test/*.java
+
+
+    - name: Ejecutar tests
+      run: |
+        java -cp out org.junit.runner.JUnitCore $(find src/test/java/com/tt1/test -name "*Test.java" -exec basename {} .java \;)
+
+
+    - name: Actualizar rama early
+      if: success()   # Solo si los tests pasan
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git fetch origin early
+        git checkout early
+        git reset --hard origin/main
+        git push origin early --force
