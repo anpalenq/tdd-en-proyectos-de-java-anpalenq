@@ -28,7 +28,7 @@ jobs:
       run: javadoc -d docs -encoding UTF-8 -charset UTF-8 src/main/java/com/tt1/test/*.java
 
     - name: Publicar en GitHub Pages
-      uses: peaceiris/actions-gh-pages@v6
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
